@@ -5,9 +5,9 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 router.use(authController.protect);
-router.get('/checkout-session/:tourID', bookingController.getCheckoutSession);
+router.get('/checkout-session/:eventID', bookingController.getCheckoutSession);
 
-router.use(authController.restrictTo('admin', 'lead-guide'));
+router.use(authController.restrictTo('admin', 'super-admin', 'manager'));
 
 router
   .route('/')

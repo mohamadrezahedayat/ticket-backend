@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  seat: {
+  event: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Seat',
+    ref: 'Event',
     required: [true, 'Booking must belong to a seat!']
   },
+  zone: { type: String, required: true },
+  seatCode: { type: String, required: true },
   barcode: { type: String, required: [true, 'Booking must have a barcode!'] },
   user: {
     type: mongoose.Schema.ObjectId,

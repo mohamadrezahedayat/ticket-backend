@@ -17,7 +17,7 @@ const userRouter = require('./routes/userRoutes');
 const showRouter = require('./routes/showRoutes');
 const locationRouter = require('./routes/locationRoutes');
 const eventRouter = require('./routes/eventRoutes');
-// const reviewRouter = require('./routes/reviewRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 // const bookingRouter = require('./routes/bookingRoutes');
 // const viewRouter = require('./routes/viewRoutes');
 
@@ -114,7 +114,7 @@ app.use('/api/v1/artGroups', artGroupRouter);
 app.use('/api/v1/shows', showRouter);
 app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/events', eventRouter);
-// app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/reviews', reviewRouter);
 // app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
