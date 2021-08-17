@@ -6,6 +6,7 @@ const showSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A show must have a name'],
       trim: true,
+      minlength: [4, 'A show name must have more or equal then 4 characters'],
       maxlength: [40, 'A show name must have less or equal then 40 characters']
     },
     description: {

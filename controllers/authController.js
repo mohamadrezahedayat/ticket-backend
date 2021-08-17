@@ -34,20 +34,31 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
-    date: { user }
+    data: { user }
   });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    mobile: req.body.mobile,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    country: req.body.country,
-    needSupport: req.body.needSupport
-  });
+  let newUser;
+  if (req.file && req.file.filename) {
+    newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      mobile: req.body.mobile,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      photo: req.file.filename
+    });
+  } else {
+    newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      mobile: req.body.mobile,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm
+    });
+  }
+
   // // const url = 'http://localhost:3200/me';
   // const url = `${req.protocol}://${req.get('host')}/me`;
   // await new Email(newUser, url).sendWelcome();
@@ -115,7 +126,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   // grant access to protected route
   req.user = freshUser;
-  res.locals.user = freshUser;
+  // res.locals.user = freshUser;
   next();
 });
 

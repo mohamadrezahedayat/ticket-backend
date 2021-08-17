@@ -2,26 +2,34 @@ const express = require('express');
 
 const artGroupController = require('../controllers/artGroupController');
 const authController = require('../controllers/authController');
+const imageController = require('../controllers/imageController');
 
 const router = express.Router();
 
+router.route('/').get(artGroupController.getAllArtGroups);
+
+// protects all routes after this middleware
+router.use(authController.protect);
+
 router
   .route('/')
-  .get(artGroupController.getAllArtGroups)
-  .post(artGroupController.createArtGroup);
+  .post(
+    authController.restrictTo('admin', 'super-admin', 'show-manager'),
+    imageController.uploadArtGroupPhotos,
+    imageController.resizeArtGroupPhotos,
+    artGroupController.createArtGroup
+  );
+
+router.use(authController.restrictTo('admin', 'super-admin'));
 
 router
   .route('/:id')
   .get(artGroupController.getArtGroup)
   .patch(
-    authController.protect,
-    authController.restrictTo('show-manager', 'admin', 'super-admin'),
+    imageController.uploadArtGroupPhotos,
+    imageController.resizeArtGroupPhotos,
     artGroupController.updateArtGroup
   )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin', 'super-admin'),
-    artGroupController.deleteArtGroup
-  );
+  .delete(artGroupController.deleteArtGroup);
 
 module.exports = router;

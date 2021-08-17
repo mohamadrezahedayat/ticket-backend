@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
+// const formData = require('express-form-data');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -24,7 +25,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const app = express();
 
 app.set('view engine', 'pug');
-// app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
 // implement CORS
@@ -36,23 +37,23 @@ app.options('*', cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // SET SECURITY HTTP HEADERS
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      useDefaults: true,
-      directives: {
-        'script-src': [
-          "'self'",
-          'https://cdnjs.cloudflare.com',
-          'https://api.mapbox.com',
-          'blob:'
-        ],
-        'default-src': ["'self'", 'https://*.mapbox.com']
-      }
-    }
-  })
-);
-// app.use(helmet());
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       useDefaults: true,
+//       directives: {
+//         'script-src': [
+//           "'self'",
+//           'https://cdnjs.cloudflare.com',
+//           'https://api.mapbox.com',
+//           'blob:'
+//         ],
+//         'default-src': ["'self'", 'https://*.mapbox.com']
+//       }
+//     }
+//   })
+// );
+app.use(helmet());
 
 // DEVELOPMENT LOGING
 if (process.env.NODE_ENV === 'development') {
@@ -60,19 +61,19 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // LIMIT REQUESTS FROM SAME API
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many request from this ip, Please try again in an Hour!'
-});
-app.use('/api', limiter);
+// todo activate this
+// const limiter = rateLimit({
+//   max: 100,
+//   windowMs: 60 * 60 * 1000,
+//   message: 'Too many request from this ip, Please try again in an Hour!'
+// });
+// app.use('/api', limiter);
 
 // BODY PARSER, READING DATA FROM BODY INTO req.body
 app.use(express.json({ limit: '10kb' }));
 
 // URL ENCODER, READING DATA FROM FORMS INTO req.body
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
 // COOKIE PARSER, READING DATA FROM req.cookies
 app.use(cookieParser());
 
@@ -96,6 +97,7 @@ app.use(
   })
 );
 
+// app.use(formData.parse());
 app.use(compression());
 
 // TEST MIDDLEWARE
@@ -106,9 +108,6 @@ app.use((req, res, next) => {
 });
 
 // 3) ROUTES
-
-// app.use('/', viewRouter);
-
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/artGroups', artGroupRouter);
 app.use('/api/v1/shows', showRouter);
