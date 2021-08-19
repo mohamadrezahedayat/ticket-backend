@@ -2,6 +2,7 @@ const express = require('express');
 
 const showController = require('../controllers/showController');
 const authController = require('../controllers/authController');
+const imageController = require('../controllers/imageController');
 
 const router = express.Router();
 
@@ -11,6 +12,8 @@ router
   .post(
     authController.protect,
     authController.restrictTo('admin', 'super-admin'),
+    imageController.uploadShowPhotos,
+    imageController.resizeShowPhotos,
     showController.createShow
   );
 
@@ -20,6 +23,8 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('show-manager', 'admin', 'super-admin'),
+    imageController.uploadShowPhotos,
+    imageController.resizeShowPhotos,
     showController.updateShow
   )
   .delete(

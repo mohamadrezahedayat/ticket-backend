@@ -27,7 +27,7 @@ const showSchema = new mongoose.Schema(
     artGroup: {
       type: mongoose.Schema.ObjectId,
       ref: 'ArtGroup',
-      required: [true, 'Booking must belong to a art group!']
+      required: [true, 'each show must belong to a art group!']
     },
     manager: [{ type: mongoose.Schema.ObjectId, ref: 'User' }]
   }

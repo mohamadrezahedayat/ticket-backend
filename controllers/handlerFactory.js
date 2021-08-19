@@ -17,6 +17,23 @@ exports.deleteOne = Model =>
         });
         break;
 
+      case 'shows':
+        doc.images.forEach(image => {
+          fs.unlink(`./public/img/shows/${image}`, err => {
+            console.log(err);
+          });
+        });
+        fs.unlink(`./public/img/shows/${doc.imageCover}`, err => {
+          console.log(err);
+        });
+        break;
+      case 'locations':
+        doc.images.forEach(image => {
+          fs.unlink(`./public/img/locations/${image}`, err => {
+            console.log(err);
+          });
+        });
+        break;
       default:
         break;
     }
@@ -31,7 +48,6 @@ exports.deleteOne = Model =>
 
 exports.updateOne = Model =>
   catchAsync(async (req, res, next) => {
-    console.log(req);
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true

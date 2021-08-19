@@ -14,6 +14,7 @@ const catchAsync = require('../utils/catchAsync');
 //   }
 // });
 
+// general configuration
 const multerStorage = multer.memoryStorage();
 
 const muterFilter = (req, file, cb) => {
@@ -26,6 +27,7 @@ const muterFilter = (req, file, cb) => {
 
 const upload = multer({ storage: multerStorage, fileFilter: muterFilter });
 
+// user photo image controller
 exports.uploadUserPhoto = upload.single('photo');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
@@ -49,6 +51,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
+// artgroup image controller
 exports.uploadArtGroupPhotos = upload.fields([{ name: 'images', maxCount: 5 }]);
 
 exports.resizeArtGroupPhotos = catchAsync(async (req, res, next) => {
@@ -65,6 +68,69 @@ exports.resizeArtGroupPhotos = catchAsync(async (req, res, next) => {
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
         .toFile(`public/img/artists/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+  next();
+});
+
+// show image controller
+exports.uploadShowPhotos = upload.fields([
+  { name: 'images', maxCount: 5 },
+  { name: 'imageCover', maxCount: 1 }
+]);
+
+exports.resizeShowPhotos = catchAsync(async (req, res, next) => {
+  if (!req.files.images || !req.files.imageCover) return next();
+  // cover Image
+  req.body.imageCover = `show-cover-${req.body.name.replaceAll(
+    ' ',
+    '-'
+  )}-${Date.now()}.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/shows/${req.body.imageCover}`);
+
+  // images
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `show-${req.body.name.replaceAll(
+        ' ',
+        '-'
+      )}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(700, 1000)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/shows/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+  next();
+});
+
+// location image controller
+exports.uploadLocationPhotos = upload.fields([{ name: 'images', maxCount: 5 }]);
+
+exports.resizeLocationPhotos = catchAsync(async (req, res, next) => {
+  if (!req.files.images) return next();
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `location-${req.body.name.replaceAll(
+        ' ',
+        '-'
+      )}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(700, 700)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/locations/${filename}`);
 
       req.body.images.push(filename);
     })

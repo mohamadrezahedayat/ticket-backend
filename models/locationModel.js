@@ -16,21 +16,21 @@ const locationSchema = new mongoose.Schema(
       coordinates: [Number]
     },
     type: { type: String, enum: ['concert', 'club', 'boat'] },
-    address: String,
+    address: { type: String, trim: true },
+    description: { type: String, trim: true },
     capacity: [
       {
         type: {
           type: String,
           required: [true, "please define Seat's type."]
         },
-        description: String,
         price: { type: String, default: 0 },
         seats: [
           {
             code: String,
             status: {
               type: String,
-              enum: ['inactive', 'reserved', 'free', 'sold'],
+              enum: ['inactive', 'reserved', 'free', 'sold', 'in'],
               default: 'free'
             },
             price: { type: String, default: 0 }
@@ -38,7 +38,7 @@ const locationSchema = new mongoose.Schema(
         ]
       }
     ],
-    description: String
+    images: [String]
   },
   {
     toJSON: { virtuals: true },

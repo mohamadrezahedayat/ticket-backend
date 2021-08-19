@@ -2,6 +2,7 @@ const express = require('express');
 
 const locationController = require('../controllers/locationController');
 const authController = require('../controllers/authController');
+const imageController = require('../controllers/imageController');
 
 const router = express.Router();
 
@@ -11,6 +12,10 @@ router
   .post(
     authController.protect,
     authController.restrictTo('admin', 'super-admin'),
+    imageController.uploadLocationPhotos,
+    imageController.resizeLocationPhotos,
+    locationController.parsLocation,
+    locationController.parsCapacity,
     locationController.createLocation
   );
 
@@ -20,6 +25,10 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'super-admin'),
+    imageController.uploadLocationPhotos,
+    imageController.resizeLocationPhotos,
+    locationController.parsLocation,
+    locationController.parsCapacity,
     locationController.updateLocation
   )
   .delete(
