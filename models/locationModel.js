@@ -24,13 +24,20 @@ const locationSchema = new mongoose.Schema(
           type: String,
           required: [true, "please define Seat's type."]
         },
+        layout: {
+          rows: Number,
+          columns: Number,
+          startRow: Number,
+          startColumn: Number
+        },
         price: { type: String, default: 0 },
         seats: [
           {
             code: String,
+            position: { row: Number, column: String },
             status: {
               type: String,
-              enum: ['inactive', 'reserved', 'free', 'sold', 'in'],
+              enum: ['inactive', 'reserved', 'free', 'sold', 'in', 'hidden'],
               default: 'free'
             },
             price: { type: String, default: 0 }

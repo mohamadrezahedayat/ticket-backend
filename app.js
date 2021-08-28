@@ -9,7 +9,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
-// const formData = require('express-form-data');
+const formData = require('express-form-data');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -70,10 +70,10 @@ if (process.env.NODE_ENV === 'development') {
 // app.use('/api', limiter);
 
 // BODY PARSER, READING DATA FROM BODY INTO req.body
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '50kb' }));
 
 // URL ENCODER, READING DATA FROM FORMS INTO req.body
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '50kb' }));
 // COOKIE PARSER, READING DATA FROM req.cookies
 app.use(cookieParser());
 

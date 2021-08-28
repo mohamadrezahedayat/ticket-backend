@@ -6,12 +6,15 @@ const eventSchema = new mongoose.Schema(
     show: {
       type: mongoose.Schema.ObjectId,
       ref: 'Show',
-      required: [true, 'Booking must belong to a show!']
+      required: [true, 'event must belong to a real show!']
     },
     location: {
       type: mongoose.Schema.ObjectId,
       ref: 'Location',
-      required: [true, 'Booking must belong to a location!']
+      required: [
+        true,
+        'Event location must belong to a real Location!, Please first define location seats in location settings'
+      ]
     },
     createdAt: { type: Date, default: Date.now() },
     startDate: { type: Date },
@@ -21,14 +24,21 @@ const eventSchema = new mongoose.Schema(
           type: String,
           required: [true, "please define Seat's type."]
         },
+        layout: {
+          rows: Number,
+          columns: Number,
+          startRow: Number,
+          startColumn: Number
+        },
         description: String,
         price: { type: String, default: 0 },
         seats: [
           {
             code: String,
+            position: { row: Number, column: String },
             status: {
               type: String,
-              enum: ['inactive', 'reserved', 'free', 'sold'],
+              enum: ['inactive', 'reserved', 'free', 'sold', 'hidden', 'in'],
               default: 'free'
             },
             price: { type: String, default: 0 }
