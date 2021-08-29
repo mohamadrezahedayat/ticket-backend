@@ -7,7 +7,7 @@ exports.getAllShows = factory.getAll(
   Show,
   {
     path: 'artGroup',
-    select: 'name'
+    select: 'name images'
   },
   {
     path: 'manager',

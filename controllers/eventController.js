@@ -9,9 +9,30 @@ exports.getAllEvents = factory.getAll(
     path: 'location',
     select: '-description -location -show -__v -address'
   },
-  { path: 'show', select: '_id name artGroup manager images' }
+  {
+    path: 'show',
+    select: '_id name artGroup manager images imageCover',
+    populate: {
+      path: 'artGroup',
+      select: 'name images '
+    }
+  }
 );
-exports.getEvent = factory.getOne(Event);
+exports.getEvent = factory.getOne(
+  Event,
+  {
+    path: 'location',
+    select: '-description -location -show -__v -address'
+  },
+  {
+    path: 'show',
+    select: '_id name artGroup manager images imageCover',
+    populate: {
+      path: 'artGroup',
+      select: 'name images '
+    }
+  }
+);
 exports.createEvent = factory.createOne(Event);
 exports.deleteEvent = factory.deleteOne(Event);
 exports.updateEvent = factory.updateOne(Event);

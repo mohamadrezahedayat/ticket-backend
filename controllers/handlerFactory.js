@@ -81,10 +81,13 @@ exports.createOne = Model =>
     }
   });
 
-exports.getOne = (Model, popOptions) =>
+exports.getOne = (Model, pop1, pop2, pop3) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
-    if (popOptions) query = query.populate(popOptions);
+    query = query
+      .populate(pop1)
+      .populate(pop2)
+      .populate(pop3);
     const doc = await query;
 
     if (!doc) {
@@ -101,11 +104,7 @@ exports.getOne = (Model, popOptions) =>
 
 exports.getAll = (Model, pop1, pop2, pop3) =>
   catchAsync(async (req, res, next) => {
-    // To Allow for nested get reviews on tour (hack)
-    let filter = {};
-    if (req.params.tourId) filter = { tour: req.params.tourId };
-
-    const features = new APIFeatures(Model.find(filter), req.query)
+    const features = new APIFeatures(Model.find(), req.query)
       .filter()
       .sort()
       .limitFields()
@@ -114,7 +113,6 @@ exports.getAll = (Model, pop1, pop2, pop3) =>
       .populate(pop1)
       .populate(pop2)
       .populate(pop3);
-    // const docs = await features.query.populate('artGroup');
     // const docs = await features.query.explain();
 
     // SEND RESPONSE

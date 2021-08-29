@@ -8,28 +8,30 @@ const router = express.Router();
 
 router.route('/').get(artGroupController.getAllArtGroups);
 
-// protects all routes after this middleware
-router.use(authController.protect);
-
 router
   .route('/')
   .post(
+    authController.protect,
     authController.restrictTo('admin', 'super-admin', 'show-manager'),
     imageController.uploadArtGroupPhotos,
     imageController.resizeArtGroupPhotos,
     artGroupController.createArtGroup
   );
 
-router.use(authController.restrictTo('admin', 'super-admin'));
-
 router
   .route('/:id')
   .get(artGroupController.getArtGroup)
   .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'super-admin'),
     imageController.uploadArtGroupPhotos,
     imageController.resizeArtGroupPhotos,
     artGroupController.updateArtGroup
   )
-  .delete(artGroupController.deleteArtGroup);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'super-admin'),
+    artGroupController.deleteArtGroup
+  );
 
 module.exports = router;
