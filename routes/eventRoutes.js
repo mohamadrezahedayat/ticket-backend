@@ -15,6 +15,10 @@ router
   );
 
 router
+  .route('/:id/reserveSeat')
+  .patch(authController.protect, eventController.reserveSeats);
+
+router
   .route('/:id')
   .get(eventController.getEvent)
   .patch(
@@ -22,6 +26,7 @@ router
     authController.restrictTo('admin', 'show-manager', 'super-admin'),
     eventController.updateEvent
   )
+
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'super-admin'),

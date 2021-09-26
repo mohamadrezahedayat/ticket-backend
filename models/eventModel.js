@@ -35,7 +35,8 @@ const eventSchema = new mongoose.Schema(
         seats: [
           {
             code: String,
-            position: { row: Number, column: String },
+            reserveExpirationTime: Date,
+            user: { type: mongoose.Schema.ObjectId, ref: 'User' },
             status: {
               type: String,
               enum: ['inactive', 'reserved', 'free', 'sold', 'hidden', 'in'],
