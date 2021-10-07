@@ -98,7 +98,7 @@ exports.reserveSeats = catchAsync(async (req, res, next) => {
           seat.status === 'reserved' &&
           seat.reserveExpirationTime &&
           new Date(seat.reserveExpirationTime) > Date.now() + 60 * 1000 &&
-          seat.user !== userId
+          userId !== `${seat.user}`
         )
           return next(
             new AppError(
