@@ -1,18 +1,19 @@
 const express = require('express');
 const bookingController = require('../controllers/bookingController');
 const authController = require('../controllers/authController');
+const eventController = require('../controllers/eventController');
 
 const router = express.Router();
 
 router.use(authController.protect);
-router.get('/checkout-session/:eventID', bookingController.getCheckoutSession);
+// router.get('/checkout-session/:eventID', bookingController.getCheckoutSession);
 
-router.use(authController.restrictTo('admin', 'super-admin', 'manager'));
+// router.use(authController.restrictTo('admin', 'super-admin', 'manager'));
 
 router
   .route('/')
   .get(bookingController.getAllBookings)
-  .post(bookingController.creatBooking);
+  .post(bookingController.createBooking, eventController.ChangeSeatsToSold);
 
 router
   .route('/:id')

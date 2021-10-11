@@ -6,14 +6,25 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Event',
     required: [true, 'Booking must belong to a seat!']
   },
-  seatCode: { type: String, required: true },
-  barcode: { type: String, required: [true, 'Booking must have a barcode!'] },
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, 'Booking must belong to a user!']
   },
+  seatCode: { type: String, required: true },
+  barcode: { type: String },
   price: { type: Number, required: [true, 'Booking must have a price!'] },
+  paidAmount: {
+    type: Number,
+    required: [true, 'Booking must have a paid amount!']
+  },
+  currency: {
+    type: String,
+    enum: ['USD', 'TRY', 'IRR', 'TRX', 'USDT'],
+    default: 'USD'
+  },
+  transactionNumber: { type: String },
+  ipAddress: { type: String },
   createdAt: { type: Date, default: Date.now() },
   paid: {
     type: Boolean,

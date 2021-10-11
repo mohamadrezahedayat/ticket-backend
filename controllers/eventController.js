@@ -48,8 +48,7 @@ exports.parsCapacity = (req, res, next) => {
 
 exports.unreserveSeats = catchAsync(async (req, res, next) => {
   const { userId } = req.body;
-  const result = await Event.findById(req.params.id).select('capacity');
-  const { capacity } = result;
+  const { capacity } = await Event.findById(req.params.id).select('capacity');
 
   capacity.forEach(zone => {
     zone.seats.forEach(seat => {
@@ -69,7 +68,7 @@ exports.unreserveSeats = catchAsync(async (req, res, next) => {
     });
   });
 
-  const result2 = await Event.findByIdAndUpdate(
+  const data = await Event.findByIdAndUpdate(
     req.params.id,
     { capacity },
     {
@@ -81,15 +80,14 @@ exports.unreserveSeats = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: {
-      data: result2
+      data
     }
   });
 });
 
 exports.reserveSeats = catchAsync(async (req, res, next) => {
   const { selectedSeats, duration, userId } = req.body;
-  const result = await Event.findById(req.params.id).select('capacity');
-  const { capacity } = result;
+  const { capacity } = await Event.findById(req.params.id).select('capacity');
 
   capacity.forEach(zone => {
     zone.seats.forEach(seat => {
@@ -114,7 +112,7 @@ exports.reserveSeats = catchAsync(async (req, res, next) => {
       }
     });
   });
-  const result2 = await Event.findByIdAndUpdate(
+  const data = await Event.findByIdAndUpdate(
     req.params.id,
     { capacity },
     {
@@ -125,7 +123,34 @@ exports.reserveSeats = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: {
-      data: result2
+      data
     }
   });
+});
+
+exports.ChangeSeatsToSold = catchAsync(async (req, res, next) => {
+  const { eventId, userId, reservedSeats } = req.body;
+  const codes = reservedSeats.map(booked => booked.code);
+  const { capacity } = await Event.findById(eventId).select('capacity');
+
+  capacity.forEach(zone => {
+    zone.seats.forEach(seat => {
+      if (!codes.includes(seat.code)) return;
+
+      seat.status = 'sold';
+      seat.reserveExpirationTime = '';
+      seat.user = userId;
+    });
+  });
+  const data = await Event.findByIdAndUpdate(
+    eventId,
+    { capacity },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+  res
+    .status(200)
+    .json({ status: 'success', data: { event: data, tickets: req.tickets } });
 });

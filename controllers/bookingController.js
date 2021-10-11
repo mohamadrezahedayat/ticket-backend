@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const bcrypt = require('bcryptjs');
 const Event = require('../models/eventModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
@@ -44,7 +45,38 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   res.redirect(req.originalUrl.split('?')[0]);
 });
 
-exports.creatBooking = factory.createOne(Booking);
+const encrypt = async barcode => {
+  return await bcrypt.hash(barcode, 8);
+};
+exports.createBooking = catchAsync(async (req, res, next) => {
+  const { eventId, userId, reservedSeats } = req.body;
+
+  if (!eventId || !userId || reservedSeats.length === 0) return next();
+  const bookings = [];
+  const encriptedPromises = reservedSeats.map(seat =>
+    encrypt(`${eventId},${userId},${seat.code}`)
+  );
+  const barcodes = await Promise.all(encriptedPromises);
+
+  reservedSeats.forEach((seat, i) => {
+    const booking = {
+      event: eventId,
+      user: userId,
+      seatCode: seat.code,
+      barcode: barcodes[i],
+      price: seat.price,
+      paidAmount: seat.price,
+      currency: 'USD',
+      transactionNumber: `${Math.random() * 1000}`,
+      ipAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    };
+    bookings.push(booking);
+  });
+  await Promise.all(bookings);
+  const tickets = await Booking.insertMany(bookings);
+  req.tickets = tickets;
+  next();
+});
 exports.getBooking = factory.getOne(Booking);
 exports.getAllBookings = factory.getAll(Booking);
 exports.updateBooking = factory.updateOne(Booking);

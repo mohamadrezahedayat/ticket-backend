@@ -52,9 +52,10 @@ const locationSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
 locationSchema.virtual('totalCapacity').get(function() {
   return this.capacity.reduce((a, c) => a + c.seats.length, 0);
 });
-const Location = mongoose.model('Location', locationSchema);
 
+const Location = mongoose.model('Location', locationSchema);
 module.exports = Location;

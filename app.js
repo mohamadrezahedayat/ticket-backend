@@ -19,7 +19,7 @@ const showRouter = require('./routes/showRoutes');
 const locationRouter = require('./routes/locationRoutes');
 const eventRouter = require('./routes/eventRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
-// const bookingRouter = require('./routes/bookingRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 // const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
@@ -103,7 +103,7 @@ app.use(compression());
 // TEST MIDDLEWARE
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.body);
+  // console.log(req.body);
   next();
 });
 
@@ -114,7 +114,7 @@ app.use('/api/v1/shows', showRouter);
 app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/reviews', reviewRouter);
-// app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
