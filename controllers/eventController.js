@@ -107,7 +107,7 @@ exports.reserveSeats = catchAsync(async (req, res, next) => {
         seat.status = 'reserved';
         seat.reserveExpirationTime = Date.now() + duration;
         seat.user = userId;
-      } else if (userId === `${seat.user}`) {
+      } else if (userId === `${seat.user}` && seat.status === 'reserved') {
         seat.status = 'free';
       }
     });
@@ -135,11 +135,11 @@ exports.ChangeSeatsToSold = catchAsync(async (req, res, next) => {
 
   capacity.forEach(zone => {
     zone.seats.forEach(seat => {
-      if (!codes.includes(seat.code)) return;
-
-      seat.status = 'sold';
-      seat.reserveExpirationTime = '';
-      seat.user = userId;
+      if (codes.includes(seat.code)) {
+        seat.status = 'sold';
+        seat.reserveExpirationTime = '';
+        seat.user = userId;
+      }
     });
   });
   const data = await Event.findByIdAndUpdate(
