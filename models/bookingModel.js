@@ -32,6 +32,24 @@ const bookingSchema = new mongoose.Schema({
   }
 });
 
+bookingSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'event',
+    select: '-createdAt -id -__v -_id -capacity',
+    populate: [
+      {
+        path: 'location',
+        select: '-location -totalCapacity -description -__v -_id -id'
+      },
+      {
+        path: 'show',
+        select: 'name images imageCover _id'
+      }
+    ]
+  });
+  next();
+});
+
 const Booking = mongoose.model('Booking', bookingSchema);
 
 module.exports = Booking;

@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const bcrypt = require('bcryptjs');
+const encrypt = require('../utils/encrypt');
 const Event = require('../models/eventModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
@@ -45,16 +45,13 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   res.redirect(req.originalUrl.split('?')[0]);
 });
 
-const encrypt = async barcode => {
-  return await bcrypt.hash(barcode, 8);
-};
 exports.createBooking = catchAsync(async (req, res, next) => {
   const { eventId, userId, reservedSeats } = req.body;
 
   if (!eventId || !userId || reservedSeats.length === 0) return next();
   const bookings = [];
   const encriptedPromises = reservedSeats.map(seat =>
-    encrypt(`${eventId},${userId},${seat.code}`)
+    encrypt(`${eventId},${userId},${seat.code}`, 8)
   );
   const barcodes = await Promise.all(encriptedPromises);
 
@@ -77,6 +74,12 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   req.tickets = tickets;
   next();
 });
+
+exports.aliasMyTicket = (req, res, next) => {
+  req.query = { user: req.user._id };
+  next();
+};
+
 exports.getBooking = factory.getOne(Booking);
 exports.getAllBookings = factory.getAll(Booking);
 exports.updateBooking = factory.updateOne(Booking);
