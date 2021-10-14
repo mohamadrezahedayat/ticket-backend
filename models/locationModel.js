@@ -16,6 +16,7 @@ const locationSchema = new mongoose.Schema(
       coordinates: [Number]
     },
     type: { type: String, enum: ['concert', 'club', 'boat'] },
+    city: { type: String },
     address: { type: String, trim: true },
     description: { type: String, trim: true },
     capacity: [

@@ -12,6 +12,11 @@ exports.getAllShows = factory.getAll(
   {
     path: 'manager',
     select: 'name'
+  },
+  {
+    path: 'events',
+    select: 'startDate capacity',
+    populate: { path: 'location', select: 'city totalCapacity capacity name' }
   }
 );
 exports.getShow = factory.getOne(Show);

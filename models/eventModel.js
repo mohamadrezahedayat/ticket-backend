@@ -62,6 +62,7 @@ eventSchema.pre('save', async function(next) {
   this.capacity = capJas.map(a => ({ ...a }));
   next();
 });
+
 const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;
