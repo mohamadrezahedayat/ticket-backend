@@ -11,17 +11,12 @@ process.on('uncaughtException', err => {
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-// const DB = process.env.DATABASE.replace(
-//   '<PASSWORD>',
-//   process.env.DATABASE_PASSWORD
-// );
-const DB = process.env.DATABASE_LOCAL;
+const DB = process.env.DATABASE;
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    // because of warning added below dont know what it is!!!
     useUnifiedTopology: true
   })
   .then(() => console.log('DB connection successful!'));
