@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4772ed70.chunk.css",
+    "main.js": "/static/js/main.d52e08c9.chunk.js",
+    "main.js.map": "/static/js/main.d52e08c9.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.7545a8a1.js",
+    "runtime-main.js.map": "/static/js/runtime-main.7545a8a1.js.map",
+    "static/js/2.8dd18592.chunk.js": "/static/js/2.8dd18592.chunk.js",
+    "static/js/2.8dd18592.chunk.js.map": "/static/js/2.8dd18592.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.4772ed70.chunk.css.map": "/static/css/main.4772ed70.chunk.css.map",
+    "static/js/2.8dd18592.chunk.js.LICENSE.txt": "/static/js/2.8dd18592.chunk.js.LICENSE.txt",
+    "static/media/chairs.32e1b7c8.jpg": "/static/media/chairs.32e1b7c8.jpg",
+    "static/media/concert-cover.deadcb18.jpg": "/static/media/concert-cover.deadcb18.jpg",
+    "static/media/concert_video_bg.69ab9461.mp4": "/static/media/concert_video_bg.69ab9461.mp4",
+    "static/media/payment_page_temp.57311de1.png": "/static/media/payment_page_temp.57311de1.png",
+    "static/media/singer-rec.89c4d8b2.jpg": "/static/media/singer-rec.89c4d8b2.jpg",
+    "static/media/spiral.ffce6a49.png": "/static/media/spiral.ffce6a49.png",
+    "static/media/tickets.e7fc823f.jpg": "/static/media/tickets.e7fc823f.jpg",
+    "static/media/user.19056376.jpg": "/static/media/user.19056376.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7545a8a1.js",
+    "static/js/2.8dd18592.chunk.js",
+    "static/css/main.4772ed70.chunk.css",
+    "static/js/main.d52e08c9.chunk.js"
+  ]
+}
