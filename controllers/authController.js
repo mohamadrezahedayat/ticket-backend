@@ -40,7 +40,7 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   let newUser;
-  if (req.file && req.file.filename) {
+  if (req.file?.filename) {
     newUser = await User.create({
       name: req.body.name,
       email: req.body.email,

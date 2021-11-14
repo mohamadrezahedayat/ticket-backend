@@ -57,6 +57,7 @@ exports.createUser = (req, res) => {
   });
 };
 
+// exports.getUserByEmail = catchAsync((req, res, next) => {});
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);

@@ -1,26 +1,31 @@
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
-// const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
 const hpp = require('hpp');
-const cookieParser = require('cookie-parser');
-const compression = require('compression');
 const cors = require('cors');
+const path = require('path');
+const xss = require('xss-clean');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const express = require('express');
+const passport = require('passport');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 // const formData = require('express-form-data');
+// const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
-const AppError = require('./utils/appError');
-const globalErrorHandler = require('./controllers/errorController');
 const artGroupRouter = require('./routes/artGroupRoutes');
+const locationRouter = require('./routes/locationRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
+// const viewRouter = require('./routes/viewRoutes');
+const eventRouter = require('./routes/eventRoutes');
 const userRouter = require('./routes/userRoutes');
 const showRouter = require('./routes/showRoutes');
-const locationRouter = require('./routes/locationRoutes');
-const eventRouter = require('./routes/eventRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
-// const viewRouter = require('./routes/viewRoutes');
+const authRouter = require('./routes/authRoutes');
+const AppError = require('./utils/appError');
+// eslint-disable-next-line node/no-unpublished-require
+const keys = require('./config/keys');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -28,12 +33,9 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
-// implement CORS
 app.use(cors());
-// Access-Control-Allow-Origin *
 app.options('*', cors());
 
-// SERVING STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
 
 // SET SECURITY HTTP HEADERS
@@ -55,7 +57,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // );
 app.use(helmet());
 
-// DEVELOPMENT LOGING
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -69,21 +70,18 @@ if (process.env.NODE_ENV === 'development') {
 // });
 // app.use('/api', limiter);
 
-// BODY PARSER, READING DATA FROM BODY INTO req.body
 app.use(express.json({ limit: '50kb' }));
 
-// URL ENCODER, READING DATA FROM FORMS INTO req.body
 app.use(express.urlencoded({ extended: true, limit: '50kb' }));
-// COOKIE PARSER, READING DATA FROM req.cookies
+
 app.use(cookieParser());
 
-// DATA SANITIZATION AGAINT NO-SQL QUERY INJECTION
 app.use(mongoSanitize());
 
-// DATA SANITIZATION AGAINT XSS
 app.use(xss());
 
 // PREVENT PARAMETER PULLOTION
+// todo: edit parameters
 app.use(
   hpp({
     whitelist: [
@@ -100,22 +98,21 @@ app.use(
 // app.use(formData.parse());
 app.use(compression());
 
-// TEST MIDDLEWARE
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  // console.log(req.body);
-  next();
-});
+// passport sterategy
+app.use(cookieSession({ maxAge: 24 * 3600 * 1000, keys: [keys.cookieKey] }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // 3) ROUTES
+app.use('/auth', authRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/artGroups', artGroupRouter);
 app.use('/api/v1/shows', showRouter);
-app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
-
+app.use('/api/v1/locations', locationRouter);
+app.use('/api/v1/artGroups', artGroupRouter);
+app.get('/passport', (req, res) => res.send(req.user));
 // for react page
 app.use((req, res, next) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));

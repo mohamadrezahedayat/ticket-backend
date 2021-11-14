@@ -3,3 +3,7 @@ node_modules
 .vscode
 *.zip
 config.env
+static
+public/index.html
+public/asset-manifest.json
+keys.js

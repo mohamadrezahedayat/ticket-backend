@@ -19,6 +19,7 @@ class APIFeatures {
 
   // regex filtering
   // api/v1/users?like=and[name=m,role=Min,email=test]&fields=name,email&limit=10
+  // todo: serach also for empty attribute
   like() {
     if (this.queryString.like) {
       let [operator, conditions] = this.queryString.like.split('[');
