@@ -13,6 +13,10 @@ const cookieSession = require('cookie-session');
 // const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 
+const globalErrorHandler = require('./controllers/errorController');
+// const authController = require('./controllers/authController');
+// eslint-disable-next-line node/no-unpublished-require
+const keys = require('./config/keys');
 const artGroupRouter = require('./routes/artGroupRoutes');
 const locationRouter = require('./routes/locationRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
@@ -23,9 +27,6 @@ const userRouter = require('./routes/userRoutes');
 const showRouter = require('./routes/showRoutes');
 const authRouter = require('./routes/authRoutes');
 const AppError = require('./utils/appError');
-// eslint-disable-next-line node/no-unpublished-require
-const keys = require('./config/keys');
-const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -103,6 +104,12 @@ app.use(cookieSession({ maxAge: 24 * 3600 * 1000, keys: [keys.cookieKey] }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// app.use((req, res, next) => {
+// console.log('passport', passport);
+//   console.log('req._passport:', req._passport);
+//   next();
+// });
+
 // 3) ROUTES
 app.use('/auth', authRouter);
 app.use('/api/v1/users', userRouter);
@@ -112,7 +119,10 @@ app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/artGroups', artGroupRouter);
-app.get('/passport', (req, res) => res.send(req.user));
+// // template route for debuging perpuses
+// app.get('/passport', authController.protect, (req, res) => {
+//   res.send(req.user);
+// });
 // for react page
 app.use((req, res, next) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
